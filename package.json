@@ -1,5 +1,5 @@
 {
-  "name": "zMIDI",
+  "name": "zmidi",
   "homepage": "http://www.igorski.nl/",
   "author": "Igor Zinken (http://github.com/igorski/)",
   "bugs": {
@@ -21,7 +21,7 @@
     "audio"
   ],
   "preferGlobal": true,
-  "version": "0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "engines": {
     "node": "0.10.*"

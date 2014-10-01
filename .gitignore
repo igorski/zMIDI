@@ -1,3 +1,4 @@
 .idea
 intelliJ project/
 .DS_Store
+*.log
