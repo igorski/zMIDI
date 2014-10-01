@@ -2,11 +2,12 @@
 
 zMIDI is a small JavaScript "library" that provides an easy interface to transfer messages to and from the Web MIDI API
 (for those less in the know: this API provides a means to communicate with musical hardware through the web browser). zMIDI
-is aimed to easily integrate musical messages without needing to translate these to weird hexadecimal numbers.
+is aimed to easily integrate musical messages without needing to translate these to weird hexadecimal numbers or do
+scary masking operations on incoming data values.
 
 Rather than having to translate MIDI commands, comparing their hexadecimal note numbers and velocity values, zMIDI aims
-to translate these into enumerated Event types, which make more sense in a JavaScript environment and allow for easier
-MIDI development using Events!
+to translate these into enumerated types in an Event-driven model, which makes both more sense in a JavaScript
+environment and allows for easier development by providing an adequate abstraction layer.
 
 ## Usage
 
@@ -41,4 +42,5 @@ https://github.com/igorski/zMIDI/wiki
 ## Demo
 
 To quickly see what zMIDI is capable of, you can try the WebSID Chrome experiment with a MIDI keyboard attached
+
 to your computer for the experiment is using zMIDI ! : http://www.igorski.nl/experiment/websid

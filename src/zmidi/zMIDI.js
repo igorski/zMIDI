@@ -194,14 +194,20 @@ define( "zMIDI", [ "zMIDIEvent", "SysexBuffer" ], function( zMIDIEvent, SysexBuf
                             }
                         }
                     }
-                    value = new Uint8Array( eventData.subarray( i, length + i));
+                    if ( isSysexMessage && sysexBuffer.completed )
+                    {
+                        value = sysexBuffer.getMessage();
+                    }
+                    else {
+                        value = new Uint8Array( eventData.subarray( i, length + i ));
+                    }
                 }
                 // wrap it up, create zMIDIEvent and broadcast it to the listener
                 var event = new zMIDIEvent( /** @type {number} */ ( eventType ), value, velocity,
                                             channel, aPortNumber, isSysexMessage );
                 aListener( event );
 
-                // prepare for nexy Sysex message stream
+                // prepare for next Sysex message stream
                 if ( isSysexMessage && sysexBuffer.completed ) sysexBuffer.reset();
             };
 

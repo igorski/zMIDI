@@ -32,7 +32,7 @@ define( "SysexBuffer", function()
      */
     SysexBuffer.prototype.getMessage = function()
     {
-        if ( !this.completed || this._buffer !== null )
+        if ( !this.completed || this._buffer === null )
         {
             throw new Error( "SysexBuffer empty or message broadcast incomplete" );
         }
