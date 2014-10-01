@@ -1,11 +1,6 @@
 {
   "name": "zMIDI",
-  "subdomain": "zmidi",
-  "main": "./Honesthash.js",
-  "homepage": "http://ondrek.com/",
-  "bin": {
-    "honesthash": "./Honesthash.js"
-  },
+  "homepage": "http://www.igorski.nl/",
   "author": "Igor Zinken (http://github.com/igorski/)",
   "bugs": {
     "url": "https://github.com/igorski/zMIDI/issues/"
