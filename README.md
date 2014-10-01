@@ -1,12 +1,11 @@
 # zMIDI
 
 zMIDI is a small JavaScript "library" that provides an easy interface to transfer messages to and from the Web MIDI API
-(for those less in the know: this API provides a means to communicate with musical hardware through the web browser). zMIDI
-is aimed to easily integrate musical messages without needing to translate these to weird hexadecimal numbers or do
-scary masking operations on incoming data values.
+(for those less in the know: this API provides a means to communicate with musical hardware through the web browser).
 
-Rather than having to translate MIDI commands, comparing their hexadecimal note numbers and velocity values, zMIDI aims
-to translate these into enumerated types in an Event-driven model, which makes both more sense in a JavaScript
+zMIDI is aimed to easily integrate musical messages without needing to translate these to weird hexadecimal numbers or do
+scary masking operations on incoming data values. Rather than having you translate MIDI commands, zMIDI does the job
+for you and provides you with enumerated types in an Event-driven model, which makes both more sense in a JavaScript
 environment and allows for easier development by providing an adequate abstraction layer.
 
 ## Usage
@@ -30,7 +29,7 @@ won't show up when connected directly to your computer, or they will show up, bu
 
 You're likely to be most successful using an audio interface with dedicated MIDI in/out channels.
 
-For instance : M-Audio keyboard controller wouldn't show up when connected via USB, but when connecting the
+For instance : a M-Audio keyboard controller wouldn't show up when connected via USB, but when connecting the
 keyboards MIDI-Out via a DIN cable into the MIDI-In of a MOTU soundcard, all messages are transmitted clearly.
 
 ## Documentation / Wiki
