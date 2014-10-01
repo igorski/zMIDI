@@ -29,8 +29,8 @@ won't show up when connected directly to your computer, or they will show up, bu
 
 You're likely to be most successful using an audio interface with dedicated MIDI in/out channels.
 
-For instance : a M-Audio keyboard controller wouldn't show up when connected via USB, but when connecting the
-keyboards MIDI-Out via a DIN cable into the MIDI-In of a MOTU soundcard, all messages are transmitted clearly.
+For instance : an M-Audio keyboard controller wouldn't show up when connected directly via USB, but when connecting the
+keyboards MIDI-Out (via DIN cable) into the MIDI-In of a MOTU soundcard, all messages were transmitted clearly as the soundcard is now the broadcasting device.
 
 ## Documentation / Wiki
 
@@ -40,6 +40,6 @@ https://github.com/igorski/zMIDI/wiki
 
 ## Demo
 
-To quickly see what zMIDI is capable of, you can try the WebSID Chrome experiment with a MIDI keyboard attached
+To quickly see what zMIDI is capable of, you can try the WebSID Chrome experiment with a MIDI keyboard attached to your computer for the experiment is using zMIDI ! :
 
-to your computer for the experiment is using zMIDI ! : http://www.igorski.nl/experiment/websid
+http://www.igorski.nl/experiment/websid
