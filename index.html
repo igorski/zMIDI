@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>zMIDI test</title>
+</head>
+<body>
+
+    <style type="text/css">
+
+        #status {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1em;
+            width: 50%;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+    </style>
+    <main>
+
+        <h1>zMIDI example</h1>
+        <p id="status"></p>
+        <button id="connect">Connect to MIDI</button>
+
+    </main>
+
+    <!-- include RequireJS to resolve dependencies -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.14/require.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        // resolve dependencies
+
+        requirejs.config({
+            baseUrl : "src/zmidi/",
+            urlArgs : "bust=" + ( +new Date() )
+        });
+
+        require( [ "zMIDI", "zMIDIEvent", "MIDINotes" ],
+
+                function( zMIDI, zMIDIEvent, MIDINotes )
+                {
+                    // cheap method to scope them on window for this demo
+                    window.zMIDI      = zMIDI;
+                    window.zMIDIEvent = zMIDIEvent;
+                    window.MIDINotes  = MIDINotes;
+
+                    // check if zMIDI is supported
+
+                    if ( !zMIDI.isSupported())
+                    {
+                        showMessage( "Web MIDI is not supported in this browser :( see more at http://www.github.com/igorski/zmidi" );
+                        connect.style.display = "none";
+                    }
+                    else
+                    {
+                        document.getElementById( "connect" ).addEventListener( "click", function( e )
+                        {
+                            zMIDI.connect( onConnectSuccess, onConnectFailure );
+                        });
+                    }
+                });
+
+        // demo functions
+
+        function onConnectSuccess()
+        {
+            var inputs = zMIDI.getInChannels();
+
+            if ( inputs.length === 0) {
+                onConnectFailure();
+            }
+            else {
+                var feedback = "", i = -1;
+
+                inputs.forEach( function( input )
+                {
+                    feedback += input.manufacturer + " " + input.name + "<br />";
+                    zMIDI.addMessageListener( ++i, messageHandler );
+                });
+                showMessage( "found these devices:<br /><br />" + feedback + "<br />now try sending MIDI messages<br />" );
+            }
+        }
+
+        function messageHandler( event )
+        {
+            var msg = "";
+
+            switch ( event.type )
+            {
+                case zMIDIEvent.NOTE_ON:
+
+                    var pitch = MIDINotes.getPitchByNoteNumber( event.value );
+                    msg = "note on event value: " + event.value + " ( note is " +
+                           pitch.note + pitch.octave + " @ " + pitch.frequency + "Hz ) " +
+                           "@ velocity " + event.velocity;
+                    break;
+
+                case zMIDIEvent.NOTE_OFF:
+
+                    msg = "note off event value: " + event.value + " @ velocity " + event.velocity;
+                    break;
+
+                case zMIDIEvent.CONTROL_CHANGE:
+                    msg = "CC event value: " + event.velocity;
+                    break;
+
+                default:
+                    msg = "zMIDIEvent type : " + event.type + " with value " + event.value;
+                break;
+            }
+            showMessage( "received on MIDI port " + event.port + ": " + msg + " coming in on channel " + event.channel + "<br />" );
+        }
+
+        function onConnectFailure()
+        {
+            showMessage( "Could not connect to MIDI peripherals..." );
+        }
+
+        function showMessage( aMessage )
+        {
+            document.getElementById( "status" ).innerHTML += aMessage;
+        }
+
+    </script>
+</body>
+</html>
