@@ -35,7 +35,7 @@ RequireJS:
 
 Browser:
 
-    <script type="text/javascript" src="./src/SysexBufer.js"></script>
+    <script type="text/javascript" src="./src/SysexBuffer.js"></script>
     <script type="text/javascript" src="./src/zMIDI.js"></script>
     <script type="text/javascript" src="./src/zMIDIEvent.js"></script>
     <script type="text/javascript" src="./src/MIDINotes.js"></script>
