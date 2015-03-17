@@ -8,6 +8,40 @@ scary masking operations on incoming data values. Rather than having you transla
 for you and provides you with enumerated types in an Event-driven model, which makes both more sense in a JavaScript
 environment and allows for easier development by providing an adequate abstraction layer.
 
+## Installation
+
+You can install zMIDI via NPM:
+
+    npm install zmidi
+
+## Project integration
+
+zMIDI is compatible with CommonJS, AMD/RequireJS or can be included in the browser via script tags:
+
+CommonJS:
+
+    var zMIDI      = require( "zmidi" ).zMIDI;
+    var zMIDIEvent = require( "zmidi" ).zMIDIEvent;
+    var MIDINotes  = require( "zmidi" ).MIDINotes;
+
+(you can subsequently use a tool like Browserify to build for the browser).
+
+RequireJS:
+
+    require( [ "zMIDI", "zMIDIEvent", "MIDINotes" ], function( zMIDI, zMIDIEvent, MIDINotes )
+    {
+        // do something...
+    });
+
+Browser:
+
+    <script type="text/javascript" src="./src/SysexBufer.js"></script>
+    <script type="text/javascript" src="./src/zMIDI.js"></script>
+    <script type="text/javascript" src="./src/zMIDIEvent.js"></script>
+    <script type="text/javascript" src="./src/MIDINotes.js"></script>
+
+Note that the browser requires an additional include _SysexBuffer.js_.
+
 ## Usage
 
 ### Ensuring WebMIDI is available at the browser level

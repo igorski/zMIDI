@@ -34,7 +34,7 @@
 
         requirejs.config({
             baseUrl : "src/zmidi/",
-            urlArgs : "bust=" + ( +new Date() )
+            urlArgs : "bust=" + Date.now()
         });
 
         require( [ "zMIDI", "zMIDIEvent", "MIDINotes" ],
