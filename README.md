@@ -54,7 +54,7 @@ should support it on Windows, OS X, Linux, Chrome OS and Android.
 
 ### Really making sure WebMIDI is available at the application level
 
-Query the result of _ZMidi.isSupported_ to really, really make sure it is available!
+Query the result of _zMidi.isSupported()_ to really, really make sure it is available!
 
 ### Really, really making sure MIDI devices are available at the real world level
 
@@ -63,8 +63,7 @@ won't show up when connected directly to your computer, or they will show up, bu
 
 You're likely to be most successful using an audio interface with dedicated MIDI in/out channels.
 
-For instance : an M-Audio keyboard controller wouldn't show up when connected directly via USB, but when connecting the
-keyboards MIDI-Out (via DIN cable) into the MIDI-In of a MOTU soundcard, all messages were transmitted clearly as the soundcard is now the broadcasting device.
+For instance : an M-Audio keyboard controller wouldn't show up when connected directly via USB, but when connecting the keyboards MIDI-Out (via DIN cable) into the MIDI-In of a MOTU soundcard, all messages were transmitted clearly as the soundcard is now the broadcasting device.
 
 ## Documentation / Wiki
 
