@@ -263,7 +263,10 @@ if ( typeof module !== "undefined" )
 
             // attach listener
             zMIDI._listenerMap[ aPortNumber ] = proxiedListener;
-            zMIDI.getInChannels()[ aPortNumber ].addEventListener( "midimessage", proxiedListener, true );
+            var inChannel = zMIDI.getInChannels()[ aPortNumber ];
+
+            inChannel.addEventListener( "midimessage", proxiedListener, true );
+            inChannel.open();
         },
 
         /**
@@ -275,10 +278,13 @@ if ( typeof module !== "undefined" )
          */
         removeMessageListener : function( aPortNumber )
         {
-            var listener = zMIDI._listenerMap[ aPortNumber ];
+            var listener = zMIDI._listenerMap[ aPortNumber], inChannel;
 
-            if ( listener ) {
-                zMIDI.getInChannels()[ aPortNumber ].removeEventListener( "midimessage", listener, true );
+            if ( listener )
+            {
+                inChannel = zMIDI.getInChannels()[ aPortNumber ];
+                inChannel.close();
+                inChannel.removeEventListener( "midimessage", listener, true );
                 delete zMIDI._listenerMap[ aPortNumber ];
             }
         },
