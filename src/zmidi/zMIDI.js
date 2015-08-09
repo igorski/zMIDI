@@ -318,7 +318,7 @@ if ( typeof module !== "undefined" )
                 }
                 else
                 {
-                    var it = iface.outputs[ "values" ]();
+                    var it = iface.inputs[ "values" ]();
 
                     for ( var o = it[ "next" ](); !o[ "done" ]; o = it[ "next" ]() ) {
                         inputs.push( o[ "value" ] );
