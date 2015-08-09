@@ -71,8 +71,12 @@ You can view the online documentation here on Github :
 
 https://github.com/igorski/zMIDI/wiki
 
-## Demo
+## Demos
 
-To quickly see what zMIDI is capable of, you can try the WebSID Chrome experiment with a MIDI keyboard attached to your computer for the experiment is using zMIDI ! :
+To quickly see what zMIDI is capable of, you can try the following URL with a MIDI keyboard attached to your computer :
+ 
+https://rawgit.com/igorski/zMIDI/master/index.html
+
+for a demo that packs some more punch, try the WebSID Chrome experiment for this experiment is using zMIDI ! :
 
 http://www.igorski.nl/experiment/websid

@@ -38,7 +38,12 @@ if ( typeof module !== "undefined" )
 
     // AMD
     else if ( typeof define === "function" && typeof define.amd === "object" )
-        define( aName, [ "zMIDIEvent", "SysexBuffer" ], function( zMIDIEvent, SysexBuffer ) { return aModule(); });
+        define( aName, [ "zMIDIEvent", "SysexBuffer" ], function( aZME, aSB )
+        {
+            zMIDIEvent  = aZME;
+            SysexBuffer = aSB;
+            return aModule();
+        });
 
     // Browser global
     else this[ aName ] = aModule;
