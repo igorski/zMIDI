@@ -2,10 +2,11 @@
   "name": "zmidi",
   "homepage": "http://www.igorski.nl/",
   "author": "Igor Zinken (http://github.com/igorski/)",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "bugs": {
     "url": "https://github.com/igorski/zMIDI/issues/"
   },
+  "main": "zmidi.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/igorski/zMIDI.git"

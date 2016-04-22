@@ -20,9 +20,10 @@ zMIDI is compatible with CommonJS, AMD/RequireJS or can be included in the brows
 
 CommonJS:
 
-    var zMIDI      = require( "zmidi" ).zMIDI;
-    var zMIDIEvent = require( "zmidi" ).zMIDIEvent;
-    var MIDINotes  = require( "zmidi" ).MIDINotes;
+    var zMIDILib   = require( "zmidi" ),
+        zMIDI      = zMIDILib.zMIDI,
+        zMIDIEvent = zMIDILib.zMIDIEvent,
+        MIDINotes  = zMIDILib.MIDINotes;    
 
 (you can subsequently use a tool like Browserify to build for the browser).
 
@@ -75,7 +76,7 @@ https://github.com/igorski/zMIDI/wiki
 
 To quickly see what zMIDI is capable of, you can try the following URL with a MIDI keyboard attached to your computer :
  
-https://rawgit.com/igorski/zMIDI/master/index.html
+https://rawgit.com/igorski/zMIDI/master/examples/index.html
 
 for a demo that packs some more punch, try the WebSID Chrome experiment for this experiment is using zMIDI ! :
 
