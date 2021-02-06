@@ -1,15 +1,15 @@
 # zMIDI
 
-zMIDI is a small JavaScript library that provides an easy interface to transfer messages to and from the Web MIDI API
-(for those less in the know: this API provides a means to communicate with musical hardware through the web browser).
+zMIDI is a small JavaScript library that provides an easy interface to transfer messages from connected MIDI
+devices into your application. zMIDI basically enables your web app to communicate with musical hardware.
 
-zMIDI is aimed to easily integrate musical messages without needing to translate these to weird hexadecimal numbers or do scary masking operations on incoming data values. Rather than having you translate MIDI commands, zMIDI does the job for you and provides you with enumerated types in an Event-driven model, which makes both more sense in a JavaScript environment and allows for easier development by providing an adequate abstraction layer.
+Instead of you having to manually translate weird hexadecimal numbers or doing scary masking operations on incoming MIDI messages, zMIDI does the job for you and provides you with enumerated types in an Event-driven model, which makes both more sense in a JavaScript environment and allows for easier development by providing an adequate abstraction layer.
 
-zMIDI is used by WebSID and Efflux, see the demos at the end of this document.
+zMIDI is used by WebSID and Efflux, which you can try out live. See the demos section at the end of this README.
 
 ## Installation
 
-You can install zMIDI via NPM:
+You can get zMIDI via NPM:
 
 ```
 npm install zmidi
@@ -36,7 +36,7 @@ const { zMIDI, zMIDIEvent, MIDINotes } = zMIDILib;
 
 ### RequireJS
 
-Use _zidi.amd.js_ inside the _dist/_-folder for a prebuilt, minimized RequireJS library transpiled to ES5.
+Use _zmidi.amd.js_ inside the _dist/_-folder for a prebuilt, minimized AMD library transpiled to ES5.
 
 ```
 require( [ "zmidi.amd" ], function( zMIDILib ) {
@@ -64,7 +64,7 @@ Use _zmidi.min.js_ inside the _dist/_-folder for a prebuilt, minimized library t
 ### Ensuring WebMIDI is available at the browser level
 
 WebMIDI is still a W3C draft not implemented globally. Chrome users have already enjoyed this
-feature for years, across desktop and mobile platforms, Edge and Opera users following suit.
+feature for years across desktop and mobile platforms with Edge and Opera users following suit.
 
 You can [consult this page](https://caniuse.com/?search=midi) to view the latest on browser support.
 
