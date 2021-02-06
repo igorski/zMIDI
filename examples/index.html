@@ -4,26 +4,13 @@
     <title>zMIDI test</title>
 </head>
 <body>
-
-    <style type="text/css">
-
-        #status {
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding: 1em;
-            width: 50%;
-            height: 100%;
-            overflow-y: auto;
-        }
-
-    </style>
     <main>
-
         <h1>zMIDI example</h1>
-        <p id="status"></p>
         <button id="connect">Connect to MIDI</button>
-
+        <button id="clearStatus">Clear status pane</button>
+        <select id="deviceSelect" style="display: none;"></select>
+        <div id="info" class="padded"></div>
+        <div id="status" class="padded"></div>
     </main>
 
     <!-- include RequireJS to resolve dependencies -->
@@ -33,96 +20,203 @@
         // resolve dependencies
 
         requirejs.config({
-            baseUrl : "../src/",
+            baseUrl : "../dist/",
             urlArgs : "bust=" + Date.now()
         });
 
-        require( [ "zMIDI", "zMIDIEvent", "MIDINotes" ],
+        require( [ "zmidi.amd" ], function( zmidi ) {
+            var zMIDI      = zmidi.zMIDI;
+            var zMIDIEvent = zmidi.zMIDIEvent;
+            var MIDINotes  = zmidi.MIDINotes;
 
-                function( zMIDI, zMIDIEvent, MIDINotes )
-                {
-                    // cheap method to scope them on window for this demo
-                    window.zMIDI      = zMIDI;
-                    window.zMIDIEvent = zMIDIEvent;
-                    window.MIDINotes  = MIDINotes;
+            // demo variables
+            var audioContext;
+            var changeListener; // listener to track device connection changes
+            var playingNotes = {}; // map of currently playing notes
 
-                    // check if zMIDI is supported
+            var infoPane     = document.getElementById( "info" );
+            var statusPane   = document.getElementById( "status" );
+            var deviceSelect = document.getElementById( "deviceSelect" );
 
-                    if ( !zMIDI.isSupported())
-                    {
-                        showMessage( "Web MIDI is not supported in this browser :( see more at http://www.github.com/igorski/zmidi" );
-                        connect.style.display = "none";
-                    }
-                    else
-                    {
-                        document.getElementById( "connect" ).addEventListener( "click", function( e )
-                        {
-                            zMIDI.connect( onConnectSuccess, onConnectFailure );
-                        });
-                    }
-                });
+            deviceSelect.addEventListener( "change", onDeviceSelect );
 
-        // demo functions
+            // 1. setup
 
-        function onConnectSuccess()
-        {
-            var inputs = zMIDI.getInChannels();
-
-            if ( inputs.length === 0) {
-                onConnectFailure();
+            if ( !zMIDI.isSupported()) {
+                showMessage( "Web MIDI is not supported in this browser :( see more at http://www.github.com/igorski/zmidi" );
+                connect.style.display = "none";
             }
             else {
-                var feedback = "", i = -1;
+                document.getElementById( "connect" ).addEventListener( "click", function( e ) {
+                    zMIDI.connect()
+                        .then( onConnectSuccess )
+                        .catch( onConnectFailure );
 
-                inputs.forEach( function( input )
-                {
-                    feedback += input.manufacturer + " " + input.name + "<br />";
-                    zMIDI.addMessageListener( ++i, messageHandler );
+                    // create AudioContext for playback
+                    try {
+                        audioContext = new ( AudioContext || webkitAudioContext )();
+                        infoPane.innerHTML = "AudioContext created successfully. When zMIDI populates the found device list above, selecting a device and playing MIDI notes will sound as sine waves.";
+                    } catch {
+                        infoPane.innerHTML = "Could not create AudioContext. MIDI messages will be logged instead";
+                    }
                 });
-                showMessage( "found these devices:<br /><br />" + feedback + "<br />now try sending MIDI messages<br />" );
+                document.getElementById( "clearStatus" ).addEventListener( "click", function() {
+                    statusPane.innerHTML = "";
+                });
             }
-        }
 
-        function messageHandler( event )
-        {
-            var msg = "";
+            // 2. define event handlers
 
-            switch ( event.type )
-            {
-                case zMIDIEvent.NOTE_ON:
-
-                    var pitch = MIDINotes.getPitchByNoteNumber( event.value );
-                    msg = "note on event value: " + event.value + " ( note is " +
-                           pitch.note + pitch.octave + " @ " + pitch.frequency + "Hz ) " +
-                           "@ velocity " + event.velocity;
-                    break;
-
-                case zMIDIEvent.NOTE_OFF:
-
-                    msg = "note off event value: " + event.value + " @ velocity " + event.velocity;
-                    break;
-
-                case zMIDIEvent.CONTROL_CHANGE:
-                    msg = "CC event value: " + event.velocity;
-                    break;
-
-                default:
-                    msg = "zMIDIEvent type : " + event.type + " with value " + event.value;
-                break;
+            function onConnectSuccess( inputs, outputs ) {
+                if ( inputs.length === 0) {
+                    showMessage( "Connected to MIDI API, no devices found." );
+                    // add state change listener so get informed about newly (dis)connected devices
+                    if ( !changeListener ) {
+                        changeListener = onConnectSuccess;
+                        zMIDI.addChangeListener( changeListener );
+                    }
+                }
+                else {
+                    var feedback = "", i = -1;
+                    var options = "<option value='-1'>-- select device --</option>";
+                    inputs.forEach( function( input, index ) {
+                        var name  = input.manufacturer + " " + input.name;
+                        feedback += name + "<br />";
+                        options  += "<option value='" + index + "'>" + name + "</option>";
+                    });
+                    deviceSelect.style.display = "block";
+                    deviceSelect.innerHTML = options;
+                    showMessage( "Found these devices:<br /><br />" + feedback );
+                }
             }
-            showMessage( "received on MIDI port " + event.port + ": " + msg + " coming in on channel " + event.channel + "<br />" );
-        }
 
-        function onConnectFailure()
-        {
-            showMessage( "Could not connect to MIDI peripherals..." );
-        }
+            function onConnectFailure( error ) {
+                showMessage( "Could not connect to MIDI peripherals..." );
+                console && console.error( error );
+            }
 
-        function showMessage( aMessage )
-        {
-            document.getElementById( "status" ).innerHTML += aMessage;
-        }
+            function onDeviceSelect( event ) {
+                var portNumber = event.target.value;
+
+                // first clean up all old listeners that were previously attached
+                var amountOfPorts = zMIDI.getInChannels().length;
+                while ( amountOfPorts-- ) {
+                    zMIDI.removeMessageListener( amountOfPorts );
+                }
+                // stop all playing notes
+                Object.values( playingNotes ).forEach( function( note ) {
+                    note && note.stop();
+                });
+                playingNotes = {};
+
+                // add listener to selected device port
+                zMIDI.addMessageListener( portNumber, onMidiMessage );
+                var device = zMIDI.getInChannels()[ portNumber ];
+
+                showMessage( "Connected to " + device.name + ".<br /><br />Now try sending MIDI messages from the device.<br />" );
+            }
+
+            // 3. actual demo : handling events and playing notes
+
+            function onMidiMessage( event ) {
+                var msg = "";
+                switch ( event.type ) {
+
+                    // noteOn event received, play sine wave at event frequency
+                    // (if the broadcasting port wasn't playing this note yet)
+
+                    case zMIDIEvent.NOTE_ON:
+                        var id    = generateIdForEvent( event );
+                        var pitch = MIDINotes.getPitchByNoteNumber( event.value );
+                        if ( audioContext && !playingNotes[ id ]) {
+                            var oscillator = audioContext.createOscillator();
+                            oscillator.type = "sine";
+                            oscillator.frequency.value = pitch.frequency;
+                            oscillator.connect( audioContext.destination );
+                            oscillator.start();
+                            playingNotes[ id ] = oscillator;
+                        } else {
+                            msg = "note on event value: " + event.value + " ( note is " +
+                                   pitch.note + pitch.octave + " @ " + pitch.frequency + "Hz ) " +
+                                   "@ velocity " + event.velocity;
+                        }
+                        break;
+
+                    // noteOff event received, stop the currently playing sine wave
+
+                    case zMIDIEvent.NOTE_OFF:
+                        if ( audioContext ) {
+                            var id   = generateIdForEvent( event );
+                            var note = playingNotes[ id ];
+                            if ( note ) {
+                                note.stop();
+                                delete playingNotes[ id ];
+                            }
+                        } else {
+                            msg = "note off event value: " + event.value + " @ velocity " + event.velocity;
+                        }
+                        break;
+
+                    // control change message
+
+                    case zMIDIEvent.CONTROL_CHANGE:
+                        msg = "CC event value: " + event.velocity;
+                        break;
+
+                    default:
+                        msg = "zMIDIEvent type : " + event.type + " with value " + event.value;
+                        break;
+                }
+                // verbose debug message
+                //showMessage( "received on MIDI port " + event.port + ": " + msg + " coming in on channel " + event.channel + "<br />" );
+            }
+
+            function generateIdForEvent( event ) {
+                return event.port + ":" + event.value;
+            }
+
+            function showMessage( aMessage ) {
+                statusPane.innerHTML += aMessage;
+            }
+        });
 
     </script>
+    <style type="text/css">
+        /* rudimentary styling */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5em;
+        }
+
+        button, select {
+            border-radius: 16px;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        select {
+            margin-top: 16px;
+        }
+
+        @media screen and (min-width: 640px) {
+            #info {
+                max-width: 40%;
+            }
+            #status {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 60%;
+                height: 100%;
+                overflow-y: auto;
+            }
+        }
+
+        .padded {
+            padding: 1em;
+            box-sizing: border-box;
+        }
+    </style>
 </body>
 </html>

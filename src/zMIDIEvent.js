@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Igor Zinken / igorski
+ * Copyright (c) 2014-2021 https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,25 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-// resolve CommonJS dependencies
-
-(function( aName, aModule )
-{
-    // CommonJS
-    if ( typeof module !== "undefined" )
-        module.exports = aModule();
-
-    // AMD
-    else if ( typeof define === "function" && typeof define.amd === "object" )
-        define( aName, [], function() { return aModule(); });
-
-    // Browser global
-    else this[ aName ] = aModule;
-
-}( "zMIDIEvent", function()
-{
-    "use strict";
-
+class zMIDIEvent {
     /**
      * @constructor
      *
@@ -52,13 +34,13 @@
      * @param {boolean=} aOptSysex optional whether the Event was a sysex message,
      *                   defaults to false
      */
-    var zMIDIEvent = function( aType, aValue, aVelocity, aChannel, aPortNumber, aOptSysex )
+    constructor( aType, aValue, aVelocity, aChannel, aPortNumber, aOptSysex = false )
     {
-        this.type     = aType;
-        this.velocity = aVelocity;
-        this.channel  = aChannel;
-        this.port     = aPortNumber;
-        this.sysex    = aOptSysex ? aOptSysex : false;
+        /** @public @type {number} */  this.type = aType;
+        /** @public @type {number} */  this.velocity = aVelocity;
+        /** @public @type {number} */  this.channel  = aChannel;
+        /** @public @type {number} */  this.port     = aPortNumber;
+        /** @public @type {boolean} */ this.sysex    = aOptSysex;
 
         if ( this.sysex ) {
             this.sysexValue = /** @type {Uint8Array} */ ( aValue );
@@ -67,31 +49,20 @@
             this.value = /** @type {number} */ ( aValue );
         }
     };
+};
 
-    /* class constants */
+/* class constants */
 
-    /** @public @const @type {number} */ zMIDIEvent.NOTE_ON            = 0;
-    /** @public @const @type {number} */ zMIDIEvent.NOTE_OFF           = 1;
-    /** @public @const @type {number} */ zMIDIEvent.AFTERTOUCH         = 2;
-    /** @public @const @type {number} */ zMIDIEvent.CONTROL_CHANGE     = 3;
-    /** @public @const @type {number} */ zMIDIEvent.CHANNEL_MODE       = 4;
-    /** @public @const @type {number} */ zMIDIEvent.PROGRAM_CHANGE     = 5;
-    /** @public @const @type {number} */ zMIDIEvent.CHANNEL_AFTERTOUCH = 6;
-    /** @public @const @type {number} */ zMIDIEvent.SYSEX              = 7;
-    /** @public @const @type {number} */ zMIDIEvent.QUARTER_FRAME      = 8;
-    /** @public @const @type {number} */ zMIDIEvent.SONG_SELECT        = 9;
-    /** @public @const @type {number} */ zMIDIEvent.SONG_POSITION      = 10;
+/** @public @const @type {number} */ zMIDIEvent.NOTE_ON            = 0;
+/** @public @const @type {number} */ zMIDIEvent.NOTE_OFF           = 1;
+/** @public @const @type {number} */ zMIDIEvent.AFTERTOUCH         = 2;
+/** @public @const @type {number} */ zMIDIEvent.CONTROL_CHANGE     = 3;
+/** @public @const @type {number} */ zMIDIEvent.CHANNEL_MODE       = 4;
+/** @public @const @type {number} */ zMIDIEvent.PROGRAM_CHANGE     = 5;
+/** @public @const @type {number} */ zMIDIEvent.CHANNEL_AFTERTOUCH = 6;
+/** @public @const @type {number} */ zMIDIEvent.SYSEX              = 7;
+/** @public @const @type {number} */ zMIDIEvent.QUARTER_FRAME      = 8;
+/** @public @const @type {number} */ zMIDIEvent.SONG_SELECT        = 9;
+/** @public @const @type {number} */ zMIDIEvent.SONG_POSITION      = 10;
 
-    /* class properties */
-
-    /** @public @type {number} */     zMIDIEvent.prototype.type;
-    /** @public @type {number} */     zMIDIEvent.prototype.value;
-    /** @public @type {number} */     zMIDIEvent.prototype.velocity;
-    /** @public @type {number} */     zMIDIEvent.prototype.channel;
-    /** @public @type {number} */     zMIDIEvent.prototype.port;
-    /** @public @type {boolean} */    zMIDIEvent.prototype.sysex;
-    /** @public @type {Uint8Array} */ zMIDIEvent.prototype.sysexValue;
-
-    return zMIDIEvent;
-
-}));
+export default zMIDIEvent;

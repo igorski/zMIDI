@@ -1,70 +1,90 @@
 # zMIDI
 
-zMIDI is a small JavaScript "library" that provides an easy interface to transfer messages to and from the Web MIDI API
-(for those less in the know: this API provides a means to communicate with musical hardware through the web browser).
+zMIDI is a small JavaScript library that provides an easy interface to transfer messages from connected MIDI
+devices into your application. zMIDI basically enables your web app to communicate with musical hardware.
 
-zMIDI is aimed to easily integrate musical messages without needing to translate these to weird hexadecimal numbers or do
-scary masking operations on incoming data values. Rather than having you translate MIDI commands, zMIDI does the job
-for you and provides you with enumerated types in an Event-driven model, which makes both more sense in a JavaScript
-environment and allows for easier development by providing an adequate abstraction layer.
+Instead of you having to manually translate weird hexadecimal numbers or doing scary masking operations on incoming MIDI messages, zMIDI does the job for you and provides you with enumerated types in an Event-driven model, which makes both more sense in a JavaScript environment and allows for easier development by providing an adequate abstraction layer.
+
+zMIDI is used by WebSID and Efflux, which you can try out live. See the demos section at the end of this README.
 
 ## Installation
 
-You can install zMIDI via NPM:
+You can get zMIDI via NPM:
 
-    npm install zmidi
+```
+npm install zmidi
+```
 
 ## Project integration
 
-zMIDI is compatible with CommonJS, AMD/RequireJS or can be included in the browser via script tags:
+zMIDI is compatible with ES6 Modules, CommonJS, AMD/RequireJS or can be included in the browser via script tags:
 
-CommonJS:
+### ES6 module
 
-    var zMIDILib   = require( "zmidi" ),
-        zMIDI      = zMIDILib.zMIDI,
-        zMIDIEvent = zMIDILib.zMIDIEvent,
-        MIDINotes  = zMIDILib.MIDINotes;    
+```
+import { zMIDI, zMIDIEvent, MIDINotes } from "zmidi";
+```
+
+### CommonJS:
+
+```
+const ZMIDILib = require( "zmidi" );
+const { zMIDI, zMIDIEvent, MIDINotes } = zMIDILib;
+```
 
 (you can subsequently use a tool like Browserify to build for the browser).
 
-RequireJS:
+### RequireJS
 
-    require( [ "zMIDI", "zMIDIEvent", "MIDINotes" ], function( zMIDI, zMIDIEvent, MIDINotes )
-    {
-        // do something...
-    });
+Use _zmidi.amd.js_ inside the _dist/_-folder for a prebuilt, minimized AMD library transpiled to ES5.
 
-Browser:
+```
+require( [ "zmidi.amd" ], function( zMIDILib ) {
+    // do something with zMIDILib-properties:
+    // "zMIDI", "zMIDIEvent", "MIDINotes"    
+});
+```
 
-    <script type="text/javascript" src="./src/SysexBuffer.js"></script>
-    <script type="text/javascript" src="./src/zMIDI.js"></script>
-    <script type="text/javascript" src="./src/zMIDIEvent.js"></script>
-    <script type="text/javascript" src="./src/MIDINotes.js"></script>
+### Browser:
 
-Note that the browser requires an additional include _SysexBuffer.js_.
+Use _zmidi.min.js_ inside the _dist/_-folder for a prebuilt, minimized library transpiled to ES5.
+
+```
+<script type="text/javascript" src="./dist/zmidi.min.js"></script>
+<script type="text/javascript">
+
+    // do something with globally available actors:
+    // "zMIDI", "zMIDIEvent", "MIDINotes"
+
+</script>
+```
 
 ## Usage
 
 ### Ensuring WebMIDI is available at the browser level
 
-Those fortunate enough to have Google Chrome installed, can access this experimental feature (WebMIDI is still a W3C draft)
-by navigating to chrome://flags/ and enabling WebMIDI (directly via chrome://flags/#enable-web-midi). Note there is also
-an excellent WebMIDI shim available using the Jazz plugin, but this library is aimed at native support. Fingers crossed
-that its adaptation is coming and will be as widespread as the WebAudio API seems to be heading to ;) For now Chrome 37+
-should support it on Windows, OS X, Linux, Chrome OS and Android.
+WebMIDI is still a W3C draft not implemented globally. Chrome users have already enjoyed this
+feature for years across desktop and mobile platforms with Edge and Opera users following suit.
+
+You can [consult this page](https://caniuse.com/?search=midi) to view the latest on browser support.
 
 ### Really making sure WebMIDI is available at the application level
 
-Query the result of _zMidi.isSupported()_ to really, really make sure it is available!
+Query the result of _zMIDI.isSupported()_ to really, really make sure it is available!
 
-### Really, really making sure MIDI devices are available at the real world level
+### Making sure you meet Chrome's security standards
 
-Attach a MIDI device to your computer and activate it prior (!) to starting the browser. Note : some USB MIDI devices
-won't show up when connected directly to your computer, or they will show up, but won't transmit messages.
+As of M75, Web MIDI API will now ask for permissions. As such, any app using it will have to be served over HTTPS. Chrome’s permission requiring feature is available only on secure origins so effectively only on these the MIDI API will be allowed. The secure origins meet the following format:
 
-You're likely to be most successful using an audio interface with dedicated MIDI in/out channels.
-
-For instance : an M-Audio keyboard controller wouldn't show up when connected directly via USB, but when connecting the keyboards MIDI-Out (via DIN cable) into the MIDI-In of a MOTU soundcard, all messages were transmitted clearly as the soundcard is now the broadcasting device.
+```
+(https, *, *)
+(wss, *, *)
+(*, localhost, *)
+(*, 127/8, *)
+(*, ::1/128, *)
+(file, *, — )
+(chrome-extension, *, — )
+```
 
 ## Documentation / Wiki
 
@@ -75,9 +95,12 @@ https://github.com/igorski/zMIDI/wiki
 ## Demos
 
 To quickly see what zMIDI is capable of, you can try the following URL with a MIDI keyboard attached to your computer :
- 
+
 https://rawgit.com/igorski/zMIDI/master/examples/index.html
 
-for a demo that packs some more punch, try the WebSID Chrome experiment for this experiment is using zMIDI ! :
+those on macOS might find this [guide on creating a virtual MIDI output](https://feelyoursound.com/setup-midi-os-x/) valuable.
 
-http://www.igorski.nl/experiment/websid
+for a demo that packs some more punch, try the following applications:
+
+ * [WebSID](https://www.igorski.nl/application/websid)
+ * [Efflux](https://www.igorski.nl/application/efflux)
