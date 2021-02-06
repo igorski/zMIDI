@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Igor Zinken / igorski
+ * Copyright (c) 2014-2021 https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,24 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-// resolve CommonJS dependencies
-
-(function( aName, aModule )
-{
-    // CommonJS
-    if ( typeof module !== "undefined" )
-        module.exports = aModule();
-
-    // AMD
-    else if ( typeof define === "function" && typeof define.amd === "object" )
-        define( aName, [], function() { return aModule(); });
-
-    // Browser global
-    else this[ aName ] = aModule;
-
-}( "SysexBuffer", function()
-{
-    "use strict";
+class SysexBuffer {
 
     /**
      * convenience class to receive and store long incoming
@@ -45,16 +28,13 @@
      *
      * @constructor
      */
-    var SysexBuffer = function()
-    {
+    constructor() {
+        /* instance properties */
 
-    };
-
-    /* class properties */
-
-    /** @public @type {boolean} */     SysexBuffer.prototype.processing = false;
-    /** @public @type {boolean} */     SysexBuffer.prototype.completed  = false;
-    /** @private @type {Uint8Array} */ SysexBuffer.prototype._buffer;
+        /** @public @type {boolean} */     this.processing = false;
+        /** @public @type {boolean} */     this.completed  = false;
+        /** @private @type {Uint8Array} */ this._buffer;
+    }
 
     /* public methods */
 
@@ -66,14 +46,12 @@
      * @return {Uint8Array}
      * @throws {Error}
      */
-    SysexBuffer.prototype.getMessage = function()
-    {
-        if ( !this.completed || this._buffer === null )
-        {
+    getMessage() {
+        if ( !this.completed || this._buffer === null ) {
             throw new Error( "SysexBuffer empty or message broadcast incomplete" );
         }
         return this._buffer;
-    };
+    }
 
     /**
      * processes an incoming Sysex message and internally handles
@@ -86,10 +64,8 @@
      *
      * @return {number} offset of the last data read pointer
      */
-    SysexBuffer.prototype.process = function( data, initialOffset )
-    {
-        var j = initialOffset;
-
+    process( data, initialOffset ) {
+        let j = initialOffset;
         while ( j < data.length )
         {
             // end of message received, we're done!
@@ -102,12 +78,11 @@
             }
             ++j;
         }
-
         this.append( data.subarray( initialOffset, j ));
         this.processing = true;
 
         return j;
-    };
+    }
 
     /**
      * flush the contents of the current message buffer
@@ -115,12 +90,11 @@
      *
      * @public
      */
-    SysexBuffer.prototype.reset = function()
-    {
+    reset() {
         this._buffer    = null;
-        this.completed  =
+        this.completed  = false;
         this.processing = false;
-    };
+    }
 
     /* private methods */
 
@@ -132,19 +106,16 @@
      *
      * @param {Uint8Array} data
      */
-    SysexBuffer.prototype.append = function( data )
-    {
-        var currentLength = this._buffer !== null ? this._buffer.length : 0;
-        var newBuffer     = new Uint8Array( currentLength + data.length );
+    append( data ) {
+        const currentLength = this._buffer !== null ? this._buffer.length : 0;
+        const newBuffer     = new Uint8Array( currentLength + data.length );
 
-        if ( this._buffer !== null )
-        {
+        if ( this._buffer !== null ) {
             newBuffer.set( this._buffer );
         }
         newBuffer.set( data, currentLength );
 
         this._buffer = newBuffer;
-    };
-
-    return SysexBuffer;
-}));
+    }
+};
+export default SysexBuffer;

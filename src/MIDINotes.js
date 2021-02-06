@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Igor Zinken / igorski
+ * Copyright (c) 2014-2021 https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,64 +20,43 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-// resolve CommonJS dependencies
 
-(function( aName, aModule )
-{
-    // CommonJS
-    if ( typeof module !== "undefined" )
-        module.exports = aModule();
-
-    // AMD
-    else if ( typeof define === "function" && typeof define.amd === "object" )
-        define( aName, [], function() { return aModule(); });
-
-    // Browser global
-    else this[ aName ] = aModule;
-
-}( "MIDINotes", function()
-{
+ /**
+  * MIDINotes is an enumeration that lists all MIDI note numbers
+  * as musical pitches (using note name and octave)
+  *
+  * @typedef {{
+  *              getPitchByNoteNumber : Function
+  *          }}
+  */
+const MIDINotes = {
     /**
-     * MIDINotes is an enumeration that lists all MIDI note numbers
-     * as musical pitches (using note name and octave)
+     * convert a MIDI note number into a MIDINotes.Pitch Object
+     * translating its value into more musically coherent values ;)
      *
-     * @typedef {{
-     *              getPitchByNoteNumber : Function
-     *          }}
+     * @public
+     *
+     * @param {number} aNoteNumber
+     * @return {{
+     *             note: string,
+     *             octave: number,
+     *             frequency: number
+     *         }}
      */
-    var MIDINotes =
-    {
-        /**
-         * convert a MIDI note number into a MIDINotes.Pitch Object
-         * translating its value into more musically coherent values ;)
-         *
-         * @public
-         *
-         * @param {number} aNoteNumber
-         * @return {{
-         *             note: string,
-         *             octave: number,
-         *             frequency: number
-         *         }}
-         */
-        getPitchByNoteNumber : function( aNoteNumber )
-        {
-            // note number range is 21 (A0) to 108 (C8)
+    getPitchByNoteNumber( aNoteNumber ) {
+        // note number range is 21 (A0) to 108 (C8)
 
-            return {
-                "note"      : MIDINotes.noteTable[ aNoteNumber % 12 ],
-                "octave"    : Math.floor( aNoteNumber / 12 ) - 1,
-                "frequency" : 440 * Math.pow( 2,( aNoteNumber - 69 ) / 12 )
-            };
-        },
+        return {
+            note      : MIDINotes.noteTable[ aNoteNumber % 12 ],
+            octave    : Math.floor( aNoteNumber / 12 ) - 1,
+            frequency : 440 * Math.pow( 2,( aNoteNumber - 69 ) / 12 )
+        };
+    },
 
-        /**
-         * @private
-         * @type {Array.<string>}
-         */
-        noteTable : [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ]
-    };
-
-    return MIDINotes;
-
-}));
+    /**
+     * @private
+     * @type {Array<string>}
+     */
+    noteTable : [ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" ]
+};
+export default MIDINotes;
