@@ -149,25 +149,22 @@ const zMIDI = {
         {
             const eventData = /** @type {Uint8Array} */ ( aEvent.data ), isSysexMessage = false;
 
-            const cmd          = eventData[ 0 ] >> 4;
-            const channel      = eventData[ 0 ] & 0xf;
-            const noteNumber   = eventData[ 1 ];
-            const velocity     = eventData.length > 2 ? eventData[ 2 ] : 0;
+            const cmd      = eventData[ 0 ] >> 4;
+            const channel  = eventData[ 0 ] & 0xf;
+            let value      = eventData[ 1 ];
+            const velocity = eventData.length > 2 ? eventData[ 2 ] : 0;
 
-            let eventType, value;
+            let eventType;
 
             if ( cmd == 8 || (( cmd == 9 ) && ( velocity === 0 )) )
             {
                 eventType = zMIDIEvent.NOTE_OFF;
-                value     = noteNumber;
             }
             else if ( cmd == 9 ) {
                 eventType = zMIDIEvent.NOTE_ON;
-                value     = noteNumber;
             }
             else if ( cmd == 11 ) {
                 eventType = zMIDIEvent.CONTROL_CHANGE;
-                value     = velocity; // CC message value is velocity
             }
             else
             {
