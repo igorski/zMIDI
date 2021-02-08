@@ -151,26 +151,28 @@ const zMIDI = {
 
             const cmd      = eventData[ 0 ] >> 4;
             const channel  = eventData[ 0 ] & 0xf;
-            let value      = eventData[ 1 ];
+            const number   = eventData[ 1 ];
             const velocity = eventData.length > 2 ? eventData[ 2 ] : 0;
 
-            let eventType;
+            let eventType, value;
 
             if ( cmd == 8 || (( cmd == 9 ) && ( velocity === 0 )) )
             {
                 eventType = zMIDIEvent.NOTE_OFF;
+                value     = number;
             }
             else if ( cmd == 9 ) {
                 eventType = zMIDIEvent.NOTE_ON;
+                value     = number;
             }
             else if ( cmd == 11 ) {
                 eventType = zMIDIEvent.CONTROL_CHANGE;
+                value     = velocity;
             }
             else
             {
-                // everything else, likely Sysex message
+                // everything else
                 let length = 0;
-
                 for ( let i = 0; i < eventData.length; i += length )
                 {
                     if ( sysexBuffer.processing )
@@ -255,7 +257,7 @@ const zMIDI = {
             }
             // wrap it up, create zMIDIEvent and broadcast it to the listener
             const event = new zMIDIEvent(
-                /** @type {number} */ ( eventType ), value, velocity,
+                /** @type {number} */ ( eventType ), value, velocity, number,
                 channel, aPortNumber, isSysexMessage
             );
             aListener( event );

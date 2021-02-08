@@ -113,7 +113,7 @@
                 zMIDI.addMessageListener( portNumber, onMidiMessage );
                 var device = zMIDI.getInChannels()[ portNumber ];
 
-                showMessage( "Connected to " + device.name + ".<br /><br />Now try sending MIDI messages from the device.<br />" );
+                showMessage( "Connected to " + device.name + ".<br /><br />Now try sending MIDI messages from the device." );
             }
 
             // 3. actual demo : handling events and playing notes
@@ -160,11 +160,11 @@
                     // control change message
 
                     case zMIDIEvent.CONTROL_CHANGE:
-                        msg = "CC event value: " + event.velocity;
+                        showMessage( "CC event value: " + event.velocity );
                         break;
 
                     default:
-                        msg = "zMIDIEvent type : " + event.type + " with value " + event.value;
+                        showMessage( "zMIDIEvent type : " + event.type + " with value " + event.value );
                         break;
                 }
                 // verbose debug message
@@ -176,7 +176,7 @@
             }
 
             function showMessage( aMessage ) {
-                statusPane.innerHTML += aMessage;
+                statusPane.innerHTML += aMessage + "<br />";
             }
         });
 

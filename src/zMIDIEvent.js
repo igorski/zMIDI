@@ -24,29 +24,31 @@ class zMIDIEvent {
     /**
      * @constructor
      *
-     * @param {number} aType MIDI message type
-     * @param {number|Uint8Array} aValue the MIDI message value can be Uint8Array
+     * @param {number} type MIDI message type
+     * @param {number|Uint8Array} value the MIDI message value can be Uint8Array
      *                 for sysex messages
-     * @param {number} aVelocity the MIDI velocity value
-     * @param {number} aChannel the MIDI channel the message was broadcast over
-     * @param {number} aPortNumber the MIDI Input port number the
+     * @param {number} velocity the MIDI velocity value
+     * @param {number} number the MIDI controller|program number
+     * @param {number} channel the MIDI channel the message was broadcast over
+     * @param {number} portNumber the MIDI Input port number the
      *                 message was transmitted to / received on
-     * @param {boolean=} aOptSysex optional whether the Event was a sysex message,
+     * @param {boolean=} optSysex optional whether the Event was a sysex message,
      *                   defaults to false
      */
-    constructor( aType, aValue, aVelocity, aChannel, aPortNumber, aOptSysex = false )
+    constructor( type, value, velocity, number, channel, portNumber, optSysex = false )
     {
-        /** @public @type {number} */  this.type = aType;
-        /** @public @type {number} */  this.velocity = aVelocity;
-        /** @public @type {number} */  this.channel  = aChannel;
-        /** @public @type {number} */  this.port     = aPortNumber;
-        /** @public @type {boolean} */ this.sysex    = aOptSysex;
+        /** @public @type {number} */  this.type     = type;
+        /** @public @type {number} */  this.velocity = velocity;
+        /** @public @type {number} */  this.number   = number;
+        /** @public @type {number} */  this.channel  = channel;
+        /** @public @type {number} */  this.port     = portNumber;
+        /** @public @type {boolean} */ this.sysex    = optSysex;
 
         if ( this.sysex ) {
-            this.sysexValue = /** @type {Uint8Array} */ ( aValue );
+            this.sysexValue = /** @type {Uint8Array} */ ( value );
         }
         else {
-            this.value = /** @type {number} */ ( aValue );
+            this.value = /** @type {number} */ ( value );
         }
     };
 };
