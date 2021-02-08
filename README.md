@@ -1,7 +1,7 @@
 # zMIDI
 
 zMIDI is a small JavaScript library that provides an easy interface to transfer messages from connected MIDI
-devices into your application. zMIDI basically enables your web app to communicate with musical hardware.
+devices into your application and vice versa. zMIDI basically enables your web app to communicate with musical hardware.
 
 Instead of you having to manually translate weird hexadecimal numbers or doing scary masking operations on incoming MIDI messages, zMIDI does the job for you and provides you with enumerated types in an Event-driven model, which makes both more sense in a JavaScript environment and allows for easier development by providing an adequate abstraction layer.
 
