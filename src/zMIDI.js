@@ -117,12 +117,18 @@ const zMIDI = {
         midiInterface.addEventListener( "statechange", changeListener );
     },
 
+    removeChangeListener() {
+        if ( changeListener ) {
+            midiInterface.removeEventListener( "statechange", changeListener );
+            changeListener = null;
+        }
+    },
+
     destroy() {
         if ( !zMIDI.isConnected() ) {
             return;
         }
-        changeListener && midiInterface.removeEventListener( "statechange", changeListener );
-
+        zMIDI.removeChangeListener();
         Object.entries( listenerMap ).forEach(([ portNumber, listener ]) => {
             if ( listener ) {
                 const inChannel = zMIDI.getInChannels()[ portNumber ];
@@ -131,8 +137,7 @@ const zMIDI = {
                 delete listenerMap[ portNumber ];
             }
         });
-        changeListener = null;
-        midiInterface  = null;
+        midiInterface = null;
     },
 
     /**
