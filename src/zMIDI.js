@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2021 https://www.igorski.nl
+ * Copyright (c) 2014-2023 https://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -45,18 +45,6 @@ function handleConnectionFailure() {
 
 /**
  * the main hub that hooks into the MIDI interface
- *
- * @typedef {{
- *              connect,
- *              isSupported,
- *              isConnected,
- *              addMessageListener,
- *              removeMessageListener,
- *              sendMessage,
- *              getInChannels,
- *              getOutChannels,
- *              getCurrentTime
- *          }}
  */
 const zMIDI = {
     /* public methods */
@@ -64,10 +52,9 @@ const zMIDI = {
     /**
      * Creates a connection to the MIDI interface.
      *
-     * @public
      * @param {boolean=} aOptSysex optional, whether to also provide an interface to
      *                   send and receive system exclusive messages
-     * @return {Promise<Array<MIDIInput>, Array<MIDIOutput>>}
+     * @return {Promise<Array<WebMidi.MIDIInput>, Array<WebMidi.MIDIOutput>>}
      */
     connect( aOptSysex = false ) {
         if ( !zMIDI.isSupported() ) {
@@ -89,7 +76,6 @@ const zMIDI = {
      * note this does NOT mean a successful connection can be established !
      * (i.e. navigator supports MIDI, but no devices are attached)
      *
-     * @public
      * @return {boolean}
      */
     isSupported() {
@@ -100,13 +86,15 @@ const zMIDI = {
      * whether zMIDI is connected to an interface / listening
      * to MIDI messages
      *
-     * @public
      * @return {boolean}
      */
     isConnected() {
         return midiInterface !== null;
     },
 
+    /**
+     * @param {function(Array<WebMidi.MIDIInput>, Array<WebMidi.MIDIOutput>)} listener
+     */
     addChangeListener( listener ) {
         if ( !zMIDI.isConnected() ) {
             throw new Error( "cannot add listener without connecting zMIDI first" );
@@ -143,12 +131,10 @@ const zMIDI = {
     /**
      * attach a method to listen to MIDI message in events
      *
-     * @public
-     *
-     * @param {number} aPortNumber index of the MIDI port to listen on
-     * @param {!Function} aListener to receive {zMIDIEvent}
+     * @param {number} portNumber index of the MIDI port to listen on
+     * @param {function(ZMIDIEvent)} listener to receive {zMIDIEvent}
      */
-    addMessageListener( aPortNumber, aListener ) {
+    addMessageListener( portNumber, listener ) {
         const sysexBuffer     = new SysexBuffer(); // create a new sysex buffer for this port
         const proxiedListener = function( aEvent )
         {
@@ -263,9 +249,9 @@ const zMIDI = {
             // wrap it up, create zMIDIEvent and broadcast it to the listener
             const event = new zMIDIEvent(
                 /** @type {number} */ ( eventType ), value, velocity, number,
-                channel, aPortNumber, isSysexMessage
+                channel, portNumber, isSysexMessage
             );
-            aListener( event );
+            listener( event );
 
             // prepare for next Sysex message stream
             if ( isSysexMessage && sysexBuffer.completed ) {
@@ -274,8 +260,8 @@ const zMIDI = {
         };
 
         // attach listener
-        listenerMap[ aPortNumber ] = proxiedListener;
-        const inChannel = zMIDI.getInChannels()[ aPortNumber ];
+        listenerMap[ portNumber ] = proxiedListener;
+        const inChannel = zMIDI.getInChannels()[ portNumber ];
 
         inChannel.addEventListener( "midimessage", proxiedListener, true );
         inChannel.open();
@@ -284,47 +270,42 @@ const zMIDI = {
     /**
      * detach a method to listen to MIDI message in events
      *
-     * @public
-     *
-     * @param {number} aPortNumber index of the MIDI port stop listening on
+     * @param {number} portNumber index of the MIDI port stop listening on
      */
-    removeMessageListener( aPortNumber )
+    removeMessageListener( portNumber )
     {
-        const listener = listenerMap[ aPortNumber];
+        const listener = listenerMap[ portNumber];
         if ( listener ) {
-            const inChannel = zMIDI.getInChannels()[ aPortNumber ];
+            const inChannel = zMIDI.getInChannels()[ portNumber ];
             inChannel.close();
             inChannel.removeEventListener( "midimessage", listener, true );
-            delete listenerMap[ aPortNumber ];
+            delete listenerMap[ portNumber ];
         }
     },
 
     /**
      * broadcast a message to a MIDI port
      *
-     * @public
-     *
-     * @param {number} aPortNumber index of the MIDI port to broadcast to
-     * @param {Array<number>} aMessage to send, is an Array with three slots :
+     * @param {number} portNumber index of the MIDI port to broadcast to
+     * @param {Array<number>} message to send, is an Array with three slots :
      *                         event type (e.g. note on/note off), note (frequency) and velocity
-     * @param {number=} aTimestamp optional time to send the message, by default
+     * @param {number=} timestamp optional time to send the message, by default
      *                  the message will be sent immediately
      */
-    sendMessage( aPortNumber, aMessage, aTimestamp ) {
-        zMIDI.getOutChannels()[ aPortNumber ].send( aMessage, aTimestamp );
+    sendMessage( portNumber, message, timestamp ) {
+        zMIDI.getOutChannels()[ portNumber ].send( message, timestamp );
     },
 
     /**
      * retrieve all available MIDI inputs
      *
-     * @public
-     * @return {Array<MIDIInput>}
+     * @return {Array<WebMidi.MIDIInput>}
      */
     getInChannels()
     {
         if ( zMIDI.isConnected() )
         {
-            let inputs = /** @type {Array<MIDIInput>} */ ( [] );
+            let inputs = /** @type {Array<WebMidi.MIDIInput>} */ ( [] );
 
             if ( typeof midiInterface.inputs === "function" ) {
                 inputs = midiInterface.inputs();
@@ -344,14 +325,13 @@ const zMIDI = {
     /**
      * retrieve all available MIDI output ports
      *
-     * @public
-     * @return {Array<MIDIOutput>}
+     * @return {Array<WebMidi.MIDIOutput>}
      */
     getOutChannels()
     {
         if ( zMIDI.isConnected() )
         {
-            let outputs = /** @type {Array<MIDIOutput>} */ ( [] );
+            let outputs = /** @type {Array<WebMidi.MIDIOutput>} */ ( [] );
 
             if ( typeof midiInterface.outputs === "function" ) {
                 outputs = midiInterface.outputs();
@@ -374,7 +354,6 @@ const zMIDI = {
      * to the current time (e.g. getCurrentTime() + 1000 can enqueue
      * an event 1 second from now)
      *
-     * @public
      * @return {number}
      */
     getCurrentTime() {

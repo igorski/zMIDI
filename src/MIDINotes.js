@@ -24,32 +24,26 @@
  /**
   * MIDINotes is an enumeration that lists all MIDI note numbers
   * as musical pitches (using note name and octave)
-  *
-  * @typedef {{
-  *              getPitchByNoteNumber : Function
-  *          }}
   */
 const MIDINotes = {
     /**
      * convert a MIDI note number into a MIDINotes.Pitch Object
      * translating its value into more musically coherent values ;)
      *
-     * @public
-     *
-     * @param {number} aNoteNumber
+     * @param {number} noteNumber
      * @return {{
      *             note: string,
      *             octave: number,
      *             frequency: number
      *         }}
      */
-    getPitchByNoteNumber( aNoteNumber ) {
+    getPitchByNoteNumber( noteNumber ) {
         // note number range is 21 (A0) to 108 (C8)
 
         return {
-            note      : MIDINotes.noteTable[ aNoteNumber % 12 ],
-            octave    : Math.floor( aNoteNumber / 12 ) - 1,
-            frequency : 440 * Math.pow( 2,( aNoteNumber - 69 ) / 12 )
+            note      : MIDINotes.noteTable[ noteNumber % 12 ],
+            octave    : Math.floor( noteNumber / 12 ) - 1,
+            frequency : 440 * Math.pow( 2,( noteNumber - 69 ) / 12 )
         };
     },
 

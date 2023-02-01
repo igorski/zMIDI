@@ -15,6 +15,13 @@ You can get zMIDI via NPM:
 npm install zmidi
 ```
 
+zMIDI has been written in modern vanilla JavaScript but comes with TypeScript annotations. The annotations rely
+on the type annotations for the WebMIDI API. You can install these in your project using:
+
+```
+npm install --save-dev @types/webmidi
+```
+
 ## Project integration
 
 zMIDI is compatible with ES6 Modules, CommonJS, AMD/RequireJS or can be included in the browser via script tags:

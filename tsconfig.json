@@ -1,0 +1,11 @@
+{
+    "include": ["zmidi.js"],
+    "compilerOptions": {
+        "allowJs": true,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "outFile": "dist/types/zmidi.d.ts",
+        "declarationMap": true,
+        "removeComments": true,
+    }
+}

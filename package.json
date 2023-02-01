@@ -2,12 +2,13 @@
   "name": "zmidi",
   "homepage": "http://www.igorski.nl/",
   "author": "Igor Zinken (http://github.com/igorski/)",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "bugs": {
     "url": "https://github.com/igorski/zMIDI/issues/"
   },
   "main": "dist/zmidi.js",
   "jsnext:main": "zmidi.js",
+  "types": "dist/types/zmidi.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/igorski/zMIDI.git"
@@ -32,14 +33,16 @@
     "@babel/core": "7.9.6",
     "@babel/plugin-transform-runtime": "^7.9.6",
     "@babel/preset-env": "7.9.6",
-    "babel-loader": "8.1.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "babel-loader": "8.2.5",
+    "clean-webpack-plugin": "^4.0.0",
+    "typescript": "^4.7.3",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
   },
   "scripts": {
     "build": "webpack --mode=production",
-    "prepublish": "npm run build"
+    "types": "npx -p typescript tsc",
+    "prepublish": "npm run build && npm run types"
   },
   "engines": {
     "node": ">=10.0.0"

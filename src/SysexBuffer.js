@@ -41,8 +41,6 @@ class SysexBuffer {
     /**
      * retrieve the Sysex message buffer (when buffer has completed writing)
      *
-     * @public
-     *
      * @return {Uint8Array}
      * @throws {Error}
      */
@@ -56,8 +54,6 @@ class SysexBuffer {
     /**
      * processes an incoming Sysex message and internally handles
      * the message state in the internal buffer
-     *
-     * @public
      *
      * @param {Uint8Array} data
      * @param {number} initialOffset
@@ -87,8 +83,6 @@ class SysexBuffer {
     /**
      * flush the contents of the current message buffer
      * so this instance can be re-used for new messages
-     *
-     * @public
      */
     reset() {
         this._buffer    = null;
