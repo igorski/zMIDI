@@ -138,7 +138,8 @@ const zMIDI = {
         const sysexBuffer     = new SysexBuffer(); // create a new sysex buffer for this port
         const proxiedListener = function( aEvent )
         {
-            const eventData = /** @type {Uint8Array} */ ( aEvent.data ), isSysexMessage = false;
+            const eventData = /** @type {Uint8Array} */ ( aEvent.data );
+            let isSysexMessage = false;
 
             const cmd      = eventData[ 0 ] >> 4;
             const channel  = eventData[ 0 ] & 0xf;
